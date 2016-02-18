@@ -8,7 +8,7 @@ add -h for HELP menu
 Default output..
         [hostname]_[date]_opsDiag.tar.gz
 
-You can change output filename by adding 2nd command line argument..
-        ./diagnosicsData.sh [IP/Hostname] [OutputName]
+You can change port by adding 2nd command line argument (optional)..
+        ./diagnosicsData.sh [IP/Hostname] [port]
 
 extract tar/output file with: tar -zxvf [filename]

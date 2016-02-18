@@ -11,8 +11,8 @@
 #Default output..
 #        [hostname]_[date]_opsDiag.tar.gz
 
-#You can change output filename by adding 2nd command line argument..
-#        ./diagnosicsData.sh [IP/Hostname] [OutputName]
+#You can change port by adding 2nd command line argument (optional)..
+#        ./diagnosicsData.sh [IP/Hostname] [port]
 
 #extract tar/output file with: tar -zxvf [filename]         
 #=================================
@@ -22,11 +22,9 @@ timedate=$(date +"%Y.%m.%d-%H.%M")
 #==========Flags==========
 #HELP Function
 function HELP {
-  echo -e \\n"To run:"\\n"     ./diagnosicsData.sh [IP/Hostname]"\\n
-  echo -e "Default outputname:
-     [Hostname]_[Date]_opsDiag.tar.gz"\\n
-  echo -e "Change output filename:
-     ./diagnosticData.sh [IP/Hostname] [Filename]"\\n
+  echo -e \\n"To run:"\\n"     ./diagnosicsData.sh [IP/Hostname] [port *optional]"\\n
+  echo -e "Add port number:
+     ./diagnosicsData.sh [IP/Hostname] [port]"\\n
   echo -e "Prompt HELP menu:
      ./diagnosicsData.sh -h"\\n
   echo -e "Extract tar/output file with:
@@ -55,30 +53,37 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-#IP for ssh
-IP=${1} 
-
+IP=${1}
+port=""
+msg=""
+p=""
+if [ "$2" != "" ]; then
+   let port=${2}
+   msg=" on port "$port
+   p="-p "$port
+fi
 #check IP address
 #report error if no ssh connection
-var=`nmap $IP -PN -p ssh | grep open`
+var=`nmap $IP -PN -p $port ssh | grep open`
 ok="22/tcp open ssh"
 if [[ $(echo $var) == $ok ]] ; then
-  echo -e \\n$IP "[online], ready.."
+  echo -e \\n$IP $msg "[online], ready.."
 else
-  echo -e \\n"Error:" Host $IP "[cannot connect].."\\n
+  echo -e \\n"Error:" Host $IP $msg "[cannot connect].."\\n
   exit 1
 fi
 
 #saved filename
 #uses second command line argument, default if none
 default=$IP"_"$timedate"_opsDiag.tar.gz"
-filename=${2:-$default} 
+#filename=${2:-$default} //custom name
+filename=$default
 echo "Target tar file <"$filename">"
 
 #=====poll data to tar=======
 
 #fix knownhosts issue, not host key checking
-c="-o StrictHostKeyChecking=no -o LogLevel=ERROR -o UserKnownHostsFile=/dev/null"
+c="$p -o StrictHostKeyChecking=no -o LogLevel=ERROR -o UserKnownHostsFile=/dev/null"
 
 #Version
 if $(scp $c root@$1:/etc/os-release $timedate.version >&/dev/null); 
