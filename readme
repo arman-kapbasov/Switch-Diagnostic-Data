@@ -1,0 +1,14 @@
+OpsDiagnostic.sh Usage
+
+To run..
+        ./diagnosicsData.sh [IP/Hostname]
+
+add -h for HELP menu
+
+Default output..
+        [hostname]_[date]_opsDiag.tar.gz
+
+You can change output filename by adding 2nd command line argument..
+        ./diagnosicsData.sh [IP/Hostname] [OutputName]
+
+extract tar/output file with: tar -zxvf [filename]
