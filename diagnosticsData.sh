@@ -66,12 +66,12 @@ fi
 #report error if no ssh connection
 var=`nmap $IP -PN -p $port ssh | grep open`
 ok="22/tcp open ssh"
-if [[ $(echo $var) == $ok ]] ; then
-  echo -e \\n$IP $msg "[online], ready.."
-else
-  echo -e \\n"Error:" Host $IP $msg "[cannot connect].."\\n
-  exit 1
-fi
+#if [[ $(echo $var) == $ok ]] ; then
+#  echo -e \\n$IP $msg "[online], ready.."
+#else
+#  echo -e \\n"Error:" Host $IP $msg "[cannot connect].."\\n
+#  exit 1
+#fi
 
 #saved filename
 #uses second command line argument, default if none
