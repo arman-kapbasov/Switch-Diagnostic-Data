@@ -5,6 +5,12 @@ Switch Diagnostic Data Script
 Script to help retrieve information from switches including: processes running, system version, coredumps, etc.
 
 
+Link to SIG Wiki
+============================================
+
+	https://rndwiki.corp.hpecorp.net/confluence/display/hpnevpg/Diagnostic+Data+Script
+
+
 OpsDiagnostic.sh Usage
 ============================================
 
@@ -15,8 +21,5 @@ add -h for HELP menu
 
 Default output..
         [hostname]_[date]_opsDiag.tar.gz
-
-You can change port by adding 2nd command line argument (optional)..
-        ./diagnosicsData.sh [IP/Hostname] [port]
 
 extract tar/output file with: tar -zxvf [filename]
