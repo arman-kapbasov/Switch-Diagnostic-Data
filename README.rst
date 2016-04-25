@@ -1,3 +1,9 @@
+============================================
+Switch Diagnostic Data Script
+============================================
+
+Script to help retrieve information from switches including: processes running, system version, coredumps, etc.
+
 OpsDiagnostic.sh Usage
 
 To run..
