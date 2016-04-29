@@ -140,14 +140,78 @@ if $(scp -r $c root@$1:/var/log*  $timedate.logs >&/dev/null);
 fi
 
 #failed service units
- if $(ssh $c root@$1 "systemctl list-unit-files --all --state=failed" > $timedate.failed.service.units >&/dev/null ); 
+if $(ssh $c root@$1 "systemctl list-unit-files --all --state=failed" > $timedate.failed.service.units >&/dev/null ); 
 	then $(ssh $c root@$1 "systemctl list-unit-files --all --state=failed" > $timedate.failed.service.units)
 	echo ">>Copied: failed service units" ; 
-	else echo "--Failed: retrieve failed service units"
- fi
+	else echo "--Failed: retrieve failed service units" 
+fi
 
+#===================Updated Diag=====================
+#
+#vtysh
+#
+
+if $(ssh $c root@$1 "echo 'show ip route' | vtysh" > $timedate.show.ip.route >&/dev/null );
+        then $(ssh $c root@$1 "echo 'show ip route' | vtysh" > $timedate.show.ip.route)
+	echo ">>Copied: show IP route" ;
+        else echo "--Failed: retrieve show IP route"
+fi
+
+
+if $(ssh $c root@$1 "echo 'show ipv6 route' | vtysh" > $timedate.show.ipv6.route >&/dev/null );
+        then $(ssh $c root@$1 "echo 'show ipv6 route' | vtysh" > $timedate.show.ipv6.route)
+        echo ">>Copied: show IPV6" ;
+        else echo "--Failed: retrieve show IPV6"
+fi
+
+
+if $(ssh $c root@$1 "echo 'show rib' | vtysh" > $timedate.show.rib >&/dev/null );
+        then $(ssh $c root@$1 "echo 'show rib' | vtysh" > $timedate.show.rib)
+        echo ">>Copied: show rib" ;
+        else echo "--Failed: retrieve show rib"
+fi
+
+
+if $(ssh $c root@$1 "echo 'show running-config' | vtysh" > $timedate.show.running.config >&/dev/null );
+        then $(ssh $c root@$1 "echo 'show running-config' | vtysh" > $timedate.show.running.config)
+        echo ">>Copied: show running config" ;
+        else echo "--Failed: retrieve show running config"
+fi
+
+
+if $(ssh $c root@$1 "echo 'show interface' | vtysh" > $timedate.show.interface >&/dev/null );
+        then $(ssh $c root@$1 "echo 'show interface' | vtysh" > $timedate.show.interface)
+        echo ">>Copied: show interface" ;
+        else echo "--Failed: retrieve show interface"
+fi
+
+#==================bash=========
+if $(ssh $c root@$1 "echo 'ip route' | ip netns exec swns bash" > $timedate.ip.route >&/dev/null );
+        then $(ssh $c root@$1 "echo 'ip route' | ip netns exec swns bash" > $timedate.ip.route)
+        echo ">>Copied: IP route" ;
+        else echo "--Failed: retrieve IP route"
+fi
+
+if $(ssh $c root@$1 "echo 'ip -6 route' | ip netns exec swns bash" > $timedate.ip-6.route >&/dev/null );
+        then $(ssh $c root@$1 "echo 'ip -6 route' | ip netns exec swns bash" > $timedate.ip-6.route)
+        echo ">>Copied: ip -6 route" ;
+        else echo "--Failed: retrieve ip -6 route"
+fi
+
+if $(ssh $c root@$1 "echo 'ovs-appctl plugin/debug l3route' | ip netns exec swns bash" > $timedate.ovs-appctl.plugin-debug.l3route >&/dev/null );
+        then $(ssh $c root@$1 "echo 'ovs-appctl plugin/debug l3route' | ip netns exec swns bash" > $timedate.ovs-appctl.plugin-debug.l3route)
+        echo ">>Copied: ovs-appctl plugin/debug l3route" ;
+        else echo "--Failed: retrieve ovs-appctl plugin/debug l3route"
+fi
+
+if $(ssh $c root@$1 "echo 'ovs-appctl plugin/debug l3v6route' | ip netns exec swns bash" > $timedate.ovs-appctl.plugin-debug.l3v6route >&/dev/null );
+        then $(ssh $c root@$1 "echo 'ovs-appctl plugin/debug l3v6route' | ip netns exec swns bash" > $timedate.ovs-appctl.plugin-debug.l3v6route)
+        echo ">>Copied: ovs-appctl plugin/debug l3v6route" ;
+        else echo "--Failed: retrieve ovs-appctl plugin/debug l3v6route"
+fi
 #tar and remove intermediate files
 echo "[Compressing]..."
+chmod -R 700 $timedate.logs 
 tar -zcvf $filename $timedate*
 rm -r "$timedate"*
 echo -e "...[done!]"\\n
