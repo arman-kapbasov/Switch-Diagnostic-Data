@@ -56,34 +56,30 @@ fi
 IP=${1}
 port=""
 msg=""
-p=""
-if [ "$2" != "" ]; then
-   let port=${2}
-   msg=" on port "$port
-   p="-p "$port
+default=$IP"_"$timedate"_opsDiag.tar.gz"
+
+if [ $# -eq 2 ]; then
+   default=$2
 fi
 #check IP address
 #report error if no ssh connection
-var=`nmap $IP -PN -p $port ssh | grep open`
+var=`nmap $IP -PN -p ssh | grep open`
 ok="22/tcp open ssh"
-#if [[ $(echo $var) == $ok ]] ; then
-#  echo -e \\n$IP $msg "[online], ready.."
-#else
-#  echo -e \\n"Error:" Host $IP $msg "[cannot connect].."\\n
-#  exit 1
-#fi
+if [[ $(echo $var) == $ok ]] ; then
+  echo -e \\n$IP "[online], ready.."
+else
+  echo -e \\n"Error:" Host $IP "[cannot connect].."\\n
+  exit 1
+fi
 
 #saved filename
-#uses second command line argument, default if none
-default=$IP"_"$timedate"_opsDiag.tar.gz"
-#filename=${2:-$default} //custom name
 filename=$default
 echo "Target tar file <"$filename">"
 
 #=====poll data to tar=======
 
 #fix knownhosts issue, not host key checking
-c="$p -o StrictHostKeyChecking=no -o LogLevel=ERROR -o UserKnownHostsFile=/dev/null"
+c=" -o StrictHostKeyChecking=no -o LogLevel=ERROR -o UserKnownHostsFile=/dev/null"
 
 #Version
 if $(scp $c root@$1:/etc/os-release $timedate.version >&/dev/null); 
